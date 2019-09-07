@@ -1,11 +1,11 @@
 import React, { useState, Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { fetchCountries } from '../actions';
+import { fetchCountries, setSelectedCountries } from '../actions';
 import CurrencyDisplayComponent from './CurrencyDisplayComponent';
 
 const CountrySelectorComponent = props => {
-	const { countries, error } = props;
-	const [selectedCountries, setSelectedCountries] = useState([]);
+	const { countries, selectedCountries, error } = props;
+	//const [selectedCountries, setSelectedCountries] = useState([]);
 	const [suggestedCountries, setSuggestedCountries] = useState([]);
 
 	useEffect(() => {
@@ -25,17 +25,11 @@ const CountrySelectorComponent = props => {
 		} else if (value.length === 0) setSuggestedCountries([]);
 	}; //closures capture the state values.
 
-	function countrySelectedFunc(country) {
-		const selectedCountriesSet = new Set([...selectedCountries, country]); //to weed out repetitions
-		setSelectedCountries([...selectedCountriesSet]);
-	}
-
 	const renderCountryInfo = () => {
 		return !selectedCountries ? null : (
 			<Fragment>
 				<div>
 					<input type='text' name='name' placeholder='Enter value in Euros' />
-					<CurrencyDisplayComponent selectedcountries={selectedCountries} />
 				</div>
 				<ul>
 					{selectedCountries.map(country => (
@@ -71,7 +65,7 @@ const CountrySelectorComponent = props => {
 		<Fragment>
 			<div>
 				<input onChange={e => onTextChanged(e)} type='text'></input>
-				{renderFilteredList(countrySelectedFunc)}
+				{renderFilteredList(props.setSelectedCountries)}
 			</div>
 			<div>{countries.name}</div>
 			<div name='selectedCountries'>
@@ -83,13 +77,15 @@ const CountrySelectorComponent = props => {
 	);
 };
 
-const mapStateToProps = ({ countries, error }) => ({
+const mapStateToProps = ({ countries, selectedCountries, error }) => ({
 	countries,
+	selectedCountries,
 	error
 });
 
 const mapDispatchToProps = dispatch => ({
-	fetchCountries: () => dispatch(fetchCountries())
+	fetchCountries: () => dispatch(fetchCountries()),
+	setSelectedCountries: country => dispatch(setSelectedCountries(country))
 });
 
 export default connect(
