@@ -4,9 +4,10 @@ import { fetchCountries, setSelectedCountries } from '../actions';
 import CurrencyDisplayComponent from './CurrencyDisplayComponent';
 
 const CountrySelectorComponent = props => {
-	const { countries, selectedCountries, error } = props;
+	const { countries, error } = props;
 	//const [selectedCountries, setSelectedCountries] = useState([]);
 	const [suggestedCountries, setSuggestedCountries] = useState([]);
+	// This is done on purpose, this state is local to the component and should reside locally
 
 	useEffect(() => {
 		if (!sessionStorage.getItem('jwtToken')) {
@@ -24,30 +25,6 @@ const CountrySelectorComponent = props => {
 			setSuggestedCountries(countries.sort().filter(v => regex.test(v.name)));
 		} else if (value.length === 0) setSuggestedCountries([]);
 	}; //closures capture the state values.
-
-	const renderCountryInfo = () => {
-		return !selectedCountries ? null : (
-			<Fragment>
-				<div>
-					<input type='text' name='name' placeholder='Enter value in Euros' />
-				</div>
-				<ul>
-					{selectedCountries.map(country => (
-						<li key={country.name}>
-							Country Name: {country.name} , Country Population:
-							{country.population} , Currencies
-							{country.currencies.map(currency => (
-								<div className='currency-details' key={currency.name}>
-									Currency code = {currency.code} , Currency name ={' '}
-									{currency.name}, Currency Symbol = {currency.symbol}
-								</div>
-							))}
-						</li>
-					))}
-				</ul>
-			</Fragment>
-		);
-	};
 
 	const renderFilteredList = callBack => {
 		return !suggestedCountries ? null : (
@@ -70,16 +47,15 @@ const CountrySelectorComponent = props => {
 			<div>{countries.name}</div>
 			<div name='selectedCountries'>
 				<h4>Selected countries</h4>
-				{renderCountryInfo()}
+				<CurrencyDisplayComponent />
 			</div>
 			{error && <div className='error'>{JSON.stringify(error)}</div>}
 		</Fragment>
 	);
 };
 
-const mapStateToProps = ({ countries, selectedCountries, error }) => ({
+const mapStateToProps = ({ countries, error }) => ({
 	countries,
-	selectedCountries,
 	error
 });
 
