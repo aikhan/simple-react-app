@@ -9,7 +9,7 @@ function App() {
 	const store = configureStore();
 	return (
 		<Provider store={store}>
-			<div className='App'>
+			<div className='App-Component'>
 				<Navbar title='Anyfin Test App' />
 				<CountrySelectorComponent />
 			</div>

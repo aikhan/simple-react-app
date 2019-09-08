@@ -6,7 +6,6 @@ import { fetchCountryInfo } from '../api';
 
 export function* handleCountryDataLoad() {
 	try {
-		console.log('GO fetch countries');
 		const countries = yield call(fetchCountryInfo);
 		yield put(setCountries(countries));
 	} catch (error) {

@@ -1,7 +1,8 @@
 import React, { useState, Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { fetchCountries, setSelectedCountries } from '../actions';
+import { fetchCountries, setSelectedCountries, userLogin } from '../actions';
 import CurrencyDisplayComponent from './CurrencyDisplayComponent';
+import './AutoCompleteText.css';
 
 const CountrySelectorComponent = props => {
 	const { countries, error } = props;
@@ -12,10 +13,12 @@ const CountrySelectorComponent = props => {
 	useEffect(() => {
 		if (!sessionStorage.getItem('jwtToken')) {
 			console.log('Login Please');
+			props.userLogin();
 		} else {
 			console.log('Fetch countries');
 			props.fetchCountries();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const onTextChanged = e => {
@@ -40,11 +43,11 @@ const CountrySelectorComponent = props => {
 
 	return (
 		<Fragment>
-			<div>
-				<input onChange={e => onTextChanged(e)} type='text'></input>
+			<div className='autoCompleteText'>
+				<input onChange={e => onTextChanged(e)} type='search'></input>
 				{renderFilteredList(props.setSelectedCountries)}
+				{countries.name}
 			</div>
-			<div>{countries.name}</div>
 			<div name='selectedCountries'>
 				<h4>Selected countries</h4>
 				<CurrencyDisplayComponent />
@@ -61,7 +64,8 @@ const mapStateToProps = ({ countries, error }) => ({
 
 const mapDispatchToProps = dispatch => ({
 	fetchCountries: () => dispatch(fetchCountries()),
-	setSelectedCountries: country => dispatch(setSelectedCountries(country))
+	setSelectedCountries: country => dispatch(setSelectedCountries(country)),
+	userLogin: () => dispatch(userLogin())
 });
 
 export default connect(

@@ -1,8 +1,8 @@
-import { put } from 'redux-saga/effects';
+import { all } from 'redux-saga/effects';
 
 import countriesSaga from './countriesSaga';
+import userSaga from './userSaga';
 
 export default function* rootSaga() {
-	yield put({ type: 'HOLA' });
-	yield countriesSaga();
+	yield all([countriesSaga(), userSaga()]);
 }
